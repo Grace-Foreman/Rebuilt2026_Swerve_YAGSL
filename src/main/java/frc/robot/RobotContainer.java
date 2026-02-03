@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import java.io.File;
+
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -29,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final SwerveSubsystem drivebase = new SwerveSubsystem();
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -38,6 +42,11 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    // SmartDashboard.putNumber("Front left angle Offset", drivebase.getAngle(0));
+    // SmartDashboard.putNumber("Front right angle Offset", drivebase.getAngle(1));
+    // SmartDashboard.putNumber("Back left angle Offset", drivebase.getAngle(2));
+    // SmartDashboard.putNumber("Back right angle Offset", drivebase.getAngle(3));
+
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
   }
@@ -54,7 +63,7 @@ public class RobotContainer {
                                                                                                m_driverController::getRightY)
                                                            .headingWhile(true);
     Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle); //ensures orientation is relative to the field
-                                                                                            // field oriented not robot oriented = happy paulina
+    //                                                                                         // field oriented not robot oriented = happy paulina
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);                      
 
                                                            /**

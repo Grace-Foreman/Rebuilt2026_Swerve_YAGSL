@@ -13,6 +13,8 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -34,11 +36,13 @@ public class SwerveSubsystem extends SubsystemBase {
   File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");//Locate swerve confi files
   SwerveDrive  swerveDrive;
 
-  public SwerveSubsystem() {
+  public SwerveSubsystem(File directory) {
+
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
       try
     {
-      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed, new Pose2d(new Translation2d(Meter.of(1),
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.maxSpeed, new Pose2d(new Translation2d(Meter.of(1),
                                                                                                                   Meter.of(4)),
                                                                                                          Rotation2d.fromDegrees(0)));
       // Alternative method if you don't want to supply the conversion factor via JSON files.
@@ -96,5 +100,9 @@ public class SwerveSubsystem extends SubsystemBase {
     return run(() -> {
       swerveDrive.driveFieldOriented(velocity.get());
     });
+  }
+
+  public double getAngle(int module){
+    return swerveDrive.getModules()[module].getAngleMotor().getPosition();
   }
 }
